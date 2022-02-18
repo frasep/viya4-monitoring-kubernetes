@@ -27,10 +27,10 @@ securityContext:
   enabled: true  # Should be set to false when running on OpenShift
   runAsUser: 1000
 
-resources:
-  requests:
-    cpu: 100m
-    memory: 128Mi
+##resources:
+  ##requests:
+    ##cpu: 100m
+    ##memory: 128Mi
   # limits:
   #   cpu: 100m
   #   memory: 128Mi
