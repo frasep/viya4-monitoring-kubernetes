@@ -42,7 +42,11 @@ fi
 
 if [ -z "$(kubectl get ns $MON_NS -o name 2>/dev/null)" ]; then
   kubectl create ns $MON_NS
+
+  #Container Security: Disable serviceAccount Token Automounting
+  disable_sa_token_automount $MON_NS default
 fi
+
 
 set -e
 log_notice "Deploying monitoring to the [$MON_NS] namespace..."
@@ -64,7 +68,7 @@ fi
 
 # Check if Prometheus Operator CRDs are already installed
 PROM_OPERATOR_CRD_UPDATE=${PROM_OPERATOR_CRD_UPDATE:-true}
-PROM_OPERATOR_CRD_VERSION=${PROM_OPERATOR_CRD_VERSION:-v0.60.0}
+PROM_OPERATOR_CRD_VERSION=${PROM_OPERATOR_CRD_VERSION:-v0.62.0}
 if [ "$PROM_OPERATOR_CRD_UPDATE" == "true" ]; then
   log_verbose "Updating Prometheus Operator custom resource definitions"
   crds=( alertmanagerconfigs alertmanagers prometheuses prometheusrules podmonitors servicemonitors thanosrulers probes )
@@ -154,7 +158,7 @@ if [ "$V4M_CURRENT_VERSION_MAJOR" == "1" ] && [[ "$V4M_CURRENT_VERSION_MINOR" =~
     -l app.kubernetes.io/instance=v4m-prometheus-operator,app.kubernetes.io/name=kube-state-metrics
 fi
 
-KUBE_PROM_STACK_CHART_VERSION=${KUBE_PROM_STACK_CHART_VERSION:-41.7.3}
+KUBE_PROM_STACK_CHART_VERSION=${KUBE_PROM_STACK_CHART_VERSION:-43.3.1}
 helm $helmDebug upgrade --install $promRelease \
   --namespace $MON_NS \
   -f monitoring/values-prom-operator.yaml \
@@ -181,6 +185,18 @@ if [ "$TLS_ENABLE" == "true" ]; then
   kubectl patch servicemonitor -n $MON_NS $promName-grafana --type=json \
     -p='[{"op": "replace", "path": "/spec/endpoints/0/scheme", "value":"https"},{"op": "replace", "path": "/spec/endpoints/0/tlsConfig", "value":{}},{"op": "replace", "path": "/spec/endpoints/0/tlsConfig/insecureSkipVerify", "value":true}]'
 fi
+
+#Container Security: Disable serviceAccount Token Automounting
+disable_sa_token_automount $MON_NS v4m-grafana
+disable_sa_token_automount $MON_NS sas-ops-acct      #Used w/Prometheus
+disable_sa_token_automount $MON_NS v4m-node-exporter
+disable_sa_token_automount $MON_NS v4m-alertmanager
+
+#Container Security: Disable Token Automounting at ServiceAccount; enable for Pod
+disable_sa_token_automount $MON_NS v4m-kube-state-metrics
+enable_pod_token_automount $MON_NS deployment v4m-kube-state-metrics
+disable_sa_token_automount $MON_NS v4m-operator
+enable_pod_token_automount $MON_NS deployment v4m-operator
 
 log_info "Deploying ServiceMonitors and Prometheus rules"
 log_verbose "Deploying cluster ServiceMonitors"
