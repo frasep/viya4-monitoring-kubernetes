@@ -1,8 +1,40 @@
 # SAS Viya Monitoring for Kubernetes
 
-## Unreleased
+## Version 1.2.13 (16MAY2023)
 
-* **Montoring**
+* **Overall**
+  * [CHANGE] The use of the ["SAS Viya"](https://github.com/sassoftware/viya4-monitoring-kubernetes#sas-viya-monitoring-for-kubernetes) name has been updated to reflect product name changes.
+  * [CHANGE] Actual passwords are replaced with asterisks in deployed instances of the v4m Helm chart (e.g. v4m-logs, v4m-metrics, etc.).
+
+* **Metrics**
+  * [FIX] Fixed an issue that caused the Prometheus data source to fail in path-based Ingress deployments if Prometheus was not externalized
+  * [FEATURE] Added "Go Routines" graph to the SAS Go Service Details dashboard in Grafana
+
+## Version 1.2.12 (18APR2023)
+* **Overall**
+  * [FEATURE] Information about resource requests and limits added to documentation under [Minimum Resource Requirements](https://documentation.sas.com/?cdcId=obsrvcdc&cdcVersion=default&docsetId=obsrvdply&docsetTarget=n039q38k9nedd2n16rbbafwsw0ae.htm).
+  * [CHANGE] Revised Kubernetes and OpenShift version-checking logic (inc. changing ERROR message to a WARNING)
+  * [CHANGE] Updated Azure deployment sample to replace storage provisioner deprecated in AKS for K8s v1.26+
+  * [FIX] Added logic to determine if service account exists before attempting to patch it
+
+* **Metrics**
+  * [FIX] Updated invalid defintion for Prometheus and Alertmanager service monitor that prevented the service monitor metrics to be collected.
+  * [FIX] Added annotation to Alertmanager ingress resource to enable HTTPS access via nginx
+  * [FIX] Added check in `deploy_monitoring_viya.sh` to ensure user workload monitoring is enabled for openshift clusters
+
+* **Logging**
+  * [UPGRADE] OpenSearch and OpenSearch Dashboards upgraded from version 2.4.1. to 2.6.0
+  * [UPGRADE] Fluent Bit upgraded from version 2.0.8 to 2.0.9
+  * [CHANGE]  Extended validation loop when deploying content into OpenSearch Dashboards and added message to user
+  * [FIX] Added additional permissions to OpenSearch 'metricgetter' role to permit more metrics to be collected from OpenSearch
+  * [CHANGE] The ingress samples, both with host-based and path-based ingress, were modified to work with
+    OpenSearch Dashboards 2.4.1.
+
+## Version 1.2.11 (14MAR2023)
+* **Overall**
+  * [FIX] Updated deployment logic to address an issue that was discovered when deploying with external tools such as Ansible.
+
+* **Metrics**
   * [UPGRADE] - Kube-prometheus-stack has been upgraded from version 41.7.3 to 43.3.1
   * [UPGRADE] - Prometheus has been upgraded from version 2.39.0 to 2.40.7
   * [UPGRADE] - Prometheus Operator has been upgraded from version 0.60.0 to 0.62.0
@@ -12,6 +44,12 @@
   * [UPGRADE] - Kube State Metrics has been upgraded from version 2.5.0 to 2.6.0
   * [UPGRADE] - Pushgateway has been upgraded from version 1.4.3 to 1.5.1
   * [UPGRADE] - K8s-sidecar used with Grafana has been upgraded from 1.19.5 to 1.22.0
+  * [CHANGE]  - Replaced ghostunnel for Prometheus and Alertmanager when `TLS_ENABLE=true` with their respective native TLS capability.
+
+* **Logging**
+  * [FIX] Adjust priority of ISM Policy for OpenShift infrastructure indices to ensure proper policy assignment
+  * [FIX] Corrected messages in logging/bin/change_internal_password.sh showing commands to restart Fluent Bit and Elastic Exporter pods.
+
 
 ## Version 1.2.10 (14FEB2023)
 * **Overall**
@@ -29,9 +67,11 @@
     OpenSearch Dashboards 2.4.1.
   * [FIX] On OpenShift, the deployment order of OpenSearch and OpenSearch Dashboards was reversed to resolve a timing
     issue related to the shared serviceAccount.
-  * [UPGRADE] Introduced new **experimental** getlogs script written in python, to retrieve Opensearch logs with filters and save to a file.
+  * [UPGRADE] Introduced new **experimental** getlogs script written in python, to retrieve OpenSearch logs with filters and save to a file. Relevant documentation can be found [here](./logging/Export_Logs.md#export-logs-python-script---experimental)
   * [UPGRADE] Fluent Bit has been upgraded from version 1.9.9 to 2.0.8
 
+* **Metrics**
+  * [FIX] Updated recording rule logic to restore functionality to the SAS Launched Jobs dashboards.
 
 ## Version 1.2.9 (17JAN2023)
 * **Overall**
