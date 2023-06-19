@@ -38,7 +38,7 @@ if [ ! -f "$PUSHGATEWAY_USER_YAML" ]; then
 fi
 
 if [ "$VIYA_NS" == "" ]; then
-  log_error "VIYA_NS must be set to the namespace of an existing Viya deployment"
+  log_error "VIYA_NS must be set to the namespace of an existing SAS Viya deployment"
   exit 1
 fi
 
@@ -52,7 +52,7 @@ else
   wnpValuesFile="$TMP_DIR/empty.yaml"
 fi
 
-log_notice "Enabling the [$VIYA_NS] namespace for SAS Viya monitoring"
+log_notice "Enabling the [$VIYA_NS] namespace for SAS Viya Monitoring"
 
 # Exit on failure
 set -e
@@ -60,7 +60,7 @@ set -e
 # Prometheus Pushgateway
 PUSHGATEWAY_ENABLED=${PUSHGATEWAY_ENABLED:-true}
 if [ "$PUSHGATEWAY_ENABLED" == "true" ]; then
-  PUSHGATEWAY_CHART_VERSION=${PUSHGATEWAY_CHART_VERSION:-2.0.3}
+  PUSHGATEWAY_CHART_VERSION=${PUSHGATEWAY_CHART_VERSION:-2.1.6}
   if helm3ReleaseExists prometheus-pushgateway $VIYA_NS; then
     kubectl delete deployment -n $VIYA_NS prometheus-pushgateway
     svcClusterIP=$(kubectl get svc -n $VIYA_NS prometheus-pushgateway -o 'jsonpath={.spec.clusterIP}')

@@ -155,7 +155,7 @@ else
 fi
 
 log_info "Deploying Grafana..."
-OPENSHIFT_GRAFANA_CHART_VERSION=${OPENSHIFT_GRAFANA_CHART_VERSION:-6.50.0}
+OPENSHIFT_GRAFANA_CHART_VERSION=${OPENSHIFT_GRAFANA_CHART_VERSION:-6.56.4}
 helm upgrade --install $helmDebug \
   -n "$MON_NS" \
   -f "$wnpValuesFile" \
@@ -265,4 +265,4 @@ bin/show_app_url.sh GRAFANA
 # log_notice "Grafana URL: $scheme://$(kubectl get route -n $MON_NS v4m-grafana -o jsonpath='{.spec.host}{.spec.path}')"
 
 log_message ""
-log_notice "Successfully deployed SAS Viya monitoring for OpenShift"
+log_notice "Successfully deployed SAS Viya Monitoring for OpenShift"

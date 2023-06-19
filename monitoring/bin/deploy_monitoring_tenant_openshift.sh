@@ -20,12 +20,12 @@ if [ "$OPENSHIFT_CLUSTER" != "true" ]; then
 fi
 
 if [ "$VIYA_NS" == "" ]; then
-  log_error "VIYA_NS must be set to the namespace of an existing Viya deployment"
+  log_error "VIYA_NS must be set to the namespace of an existing SAS Viya deployment"
   exit 1
 fi
 
 if [ "$VIYA_TENANT" == "" ]; then
-  log_error "VIYA_TENANT must be set to the name of a current or planned Viya tenant"
+  log_error "VIYA_TENANT must be set to the name of a current or planned SAS Viya tenant"
   exit 1
 fi
 
@@ -156,7 +156,7 @@ fi
 
 log_info "Deploying Grafana..."
 grafanaYAML=$tenantDir/openshift/mt-grafana-openshift-values.yaml
-OPENSHIFT_GRAFANA_CHART_VERSION=${OPENSHIFT_GRAFANA_CHART_VERSION:-6.50.0}
+OPENSHIFT_GRAFANA_CHART_VERSION=${OPENSHIFT_GRAFANA_CHART_VERSION:-6.56.4}
 helm upgrade --install $helmDebug \
   -n "$VIYA_NS" \
   -f "$wnpValuesFile" \

@@ -20,12 +20,12 @@ if [ "$OPENSHIFT_CLUSTER" == "true" ]; then
 fi
 
 if [ "$VIYA_NS" == "" ]; then
-  log_error "VIYA_NS must be set to the namespace of an existing Viya deployment"
+  log_error "VIYA_NS must be set to the namespace of an existing SAS Viya deployment"
   exit 1
 fi
 
 if [ "$VIYA_TENANT" == "" ]; then
-  log_error "VIYA_TENANT must be set to the name of a current or planned Viya tenant"
+  log_error "VIYA_TENANT must be set to the name of a current or planned SAS Viya tenant"
   exit 1
 fi
 
@@ -154,7 +154,7 @@ else
 fi
 
 # Deploy Grafana using Helm
-GRAFANA_CHART_VERSION_TENANT=${GRAFANA_CHART_VERSION_TENANT:-6.50.0}
+GRAFANA_CHART_VERSION_TENANT=${GRAFANA_CHART_VERSION_TENANT:-6.56.4}
 helm upgrade --install $helmDebug \
   -n "$VIYA_NS" \
   -f "$wnpGrafanaValuesFile" \
